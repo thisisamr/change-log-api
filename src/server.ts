@@ -1,10 +1,14 @@
-import express from 'express';
-import { appendFile } from 'fs';
-import path from 'path'
-import router from './router'
-import morgan from 'morgan'
+import express, { urlencoded } from "express";
+import router from "./router";
+import morgan from "morgan";
+import { protect } from "./modules/auth";
+import { createNewUser, signin } from "./services/user";
+import { json } from "express";
 const app = express();
-app.use(morgan('dev'))
-app.use('/api/v1',router)
-
+app.use(json());
+app.use(urlencoded());
+app.use(morgan("dev"));
+app.use("/api/v1", protect, router);
+app.post("/user", createNewUser);
+app.post("/login", signin);
 export default app;
