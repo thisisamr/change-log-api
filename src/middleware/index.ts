@@ -9,5 +9,7 @@ export const validateUserInput = (
   err.array();
   if (!err.isEmpty()) {
     return res.status(400).json({ error: err.array() });
+  } else {
+    next();
   }
 };
