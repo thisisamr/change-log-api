@@ -8,7 +8,7 @@ export const getUpdates = async (req: reqwithUser, res: Response) => {
       user: { id: userid },
     },
     select: {
-      Update: true,
+      updates: true,
     },
   });
   return res.status(200).json({ data: updates });
@@ -27,34 +27,68 @@ export const getUpdate = async (req: reqwithUser, res: Response) => {
 };
 
 export const createUpdate = async (req: reqwithUser, res: Response) => {
-  const name = req.body.name;
-  const userId = req.user?.id;
-  const product = await prisma.product.create({
-    data: {
-      name: name,
-      user: { connect: { id: userId } },
+  const product = await prisma.product.findUnique({
+    where: {
+      id: req.body.id,
+      belongsto_id: req.user?.id,
     },
   });
+  if (!product) {
+    return res.status(400).json({ message: "nope" });
+  } else {
+    const update = await prisma.update.create({
+      data: req.body,
+    });
+  }
   return res.status(201).json({ data: product });
 };
 
 export const updateUpdate = async (req: reqwithUser, res: Response) => {
-  const updated = await prisma.product.update({
+  const product = await prisma.product.findFirst({
+    where: {
+      belongsto_id: req.user?.id,
+    },
+    include: {
+      updates: {
+        where: { product: { user: { id: req.user?.id } }, id: req.params.id },
+      },
+    },
+  });
+  if (product?.updates?.length == 0 || !product) {
+    return res
+      .status(404)
+      .json({ error: `cannot find an update with id${req.params.id}` });
+  }
+  const update = await prisma.update.update({
     where: {
       id: req.params.id,
     },
-    data: {
-      name: req.body.name,
-    },
+    data: req.body,
   });
-  return res.status(200).json({ updated });
+
+  return res.status(200).json({ update });
 };
 
 export const deleteUpdate = async (req: reqwithUser, res: Response) => {
-  const deleted = await prisma.product.delete({
+  const product = await prisma.product.findFirst({
     where: {
-      id: req.params.id,
       belongsto_id: req.user?.id,
     },
+    include: {
+      updates: {
+        where: { product: { user: { id: req.user?.id } }, id: req.params.id },
+      },
+    },
   });
+  if (product?.updates?.length == 0 || !product) {
+    return res
+      .status(404)
+      .json({ error: `cannot find an update with id: ${req.params.id}` });
+  }
+  const deleted = await prisma.update.delete({
+    where: {
+      id: req.params.id,
+    },
+  });
+  return res.status(200).json({ update: deleted.id });
 };

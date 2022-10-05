@@ -8,7 +8,12 @@ import {
   getProducts,
   updateProduct,
 } from "../services/product";
-import { getUpdates } from "../services/update";
+import {
+  createUpdate,
+  deleteUpdate,
+  getUpdates,
+  updateUpdate,
+} from "../services/update";
 
 const router = Router();
 
@@ -42,18 +47,19 @@ router.put(
   body("body").optional(),
   body("version").optional(),
   validateUserInput,
-  () => {}
+  updateUpdate
 );
 router.post(
   "/update",
+  body("productId").exists(),
   body("title").exists(),
   body("status").isIn(["in_progress", "shipped", "deprecated"]).optional(),
   body("body").exists(),
   body("version").optional(),
   validateUserInput,
-  () => {}
+  createUpdate
 );
-router.delete("/update/:id", () => {});
+router.delete("/update/:id", deleteUpdate);
 /**
  * updatepoints
  */
