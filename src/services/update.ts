@@ -1,31 +1,32 @@
 import { Response } from "express";
 import prisma from "../../prisma/client";
 import { reqwithUser } from "../modules/auth";
-export const getProducts = async (req: reqwithUser, res: Response) => {
+export const getUpdates = async (req: reqwithUser, res: Response) => {
   const userid = req.user?.id;
-  const products = await prisma.product.findMany({
+  const updates = await prisma.product.findMany({
     where: {
       user: { id: userid },
     },
-  });
-  return res.status(200).json({ data: products });
-};
-
-export const getProduct = async (req: reqwithUser, res: Response) => {
-  const productId = req.params.id;
-  const userid = req.user?.id;
-  const products = await prisma.product.findFirst({
-    where: {
-      user: { id: userid },
-      AND: {
-        id: productId,
-      },
+    select: {
+      Update: true,
     },
   });
-  return res.status(200).json({ data: products });
+  return res.status(200).json({ data: updates });
 };
 
-export const createProduct = async (req: reqwithUser, res: Response) => {
+export const getUpdate = async (req: reqwithUser, res: Response) => {
+  const updateId = req.params.id;
+  const userid = req.user?.id;
+  const update = await prisma.product.findUnique({
+    where: {
+      id: updateId,
+      belongsto_id: userid,
+    },
+  });
+  return res.status(200).json({ data: update });
+};
+
+export const createUpdate = async (req: reqwithUser, res: Response) => {
   const name = req.body.name;
   const userId = req.user?.id;
   const product = await prisma.product.create({
@@ -37,7 +38,7 @@ export const createProduct = async (req: reqwithUser, res: Response) => {
   return res.status(201).json({ data: product });
 };
 
-export const updateProduct = async (req: reqwithUser, res: Response) => {
+export const updateUpdate = async (req: reqwithUser, res: Response) => {
   const updated = await prisma.product.update({
     where: {
       id: req.params.id,
@@ -49,7 +50,7 @@ export const updateProduct = async (req: reqwithUser, res: Response) => {
   return res.status(200).json({ updated });
 };
 
-export const deleteProduct = async (req: reqwithUser, res: Response) => {
+export const deleteUpdate = async (req: reqwithUser, res: Response) => {
   const deleted = await prisma.product.delete({
     where: {
       id: req.params.id,
