@@ -22,7 +22,7 @@ model User {
   username  String    @unique
   password  String
   createdat DateTime  @default(now())
-  updateat  DateTime  @updatedAt
+  updatedat DateTime  @updatedAt
   products  Product[]
   @@map("users")
 }
@@ -31,7 +31,7 @@ model Product {
   name         String @db.VarChar(100)
   belongsto_id String @unique
   user         User   @relation(fields: [belongsto_id], references: [id])
-  Update Update[]
+  updates Update[]
   @@index([id,belongsto_id])
   @@map("products")
   }
