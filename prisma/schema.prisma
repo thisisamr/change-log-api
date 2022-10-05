@@ -24,16 +24,17 @@ model User {
   createdat DateTime  @default(now())
   updateat  DateTime  @updatedAt
   products  Product[]
+  @@map("users")
 }
-
 model Product {
   id           String @id @default(uuid())
   name         String @db.VarChar(100)
-  belongsto_id String
+  belongsto_id String @unique
   user         User   @relation(fields: [belongsto_id], references: [id])
-
   Update Update[]
-}
+  @@index([id,belongsto_id])
+  @@map("products")
+  }
 
 model Update {
   id           String        @id @default(uuid())
@@ -47,6 +48,7 @@ model Update {
   productId    String
   product      Product       @relation(fields: [productId], references: [id])
   updatepoints UpdatePoint[]
+  @@map("updates")
 }
 
 model UpdatePoint {
@@ -59,4 +61,5 @@ model UpdatePoint {
 
   updateId String
   update   Update @relation(fields: [updateId], references: [id])
+  @@map("updatepoints")
 }
