@@ -7,7 +7,7 @@ import { checkpassword, createJwt } from "../modules/auth";
  * creating a user
  */
 export const createNewUser = async (req: Request, res: Response) => {
-  const newuser: Prisma.UserCreateInput = req.body.user;
+  const newuser: Prisma.UserCreateInput = req.body;
   try {
     newuser.password = await hash(newuser.password, 5);
     const user = await prisma.user.create({
