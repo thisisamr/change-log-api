@@ -13,7 +13,7 @@ export const createJwt = (user: User | null) => {
       { id: user.id, username: user.username },
       process.env.JWTSECRET!,
       {
-        expiresIn: "1h",
+        expiresIn: "8h",
       }
     );
     return token;
@@ -49,7 +49,7 @@ const checktoken = (token: string): JwtPayload | any => {
     return { error };
   }
 };
-export type reqwithUser = IncomingMessage & {
+export type reqwithUser = Request & {
   user?: { id: string; username: string };
 };
 
