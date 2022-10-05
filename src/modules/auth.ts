@@ -54,7 +54,7 @@ export type reqwithUser = IncomingMessage & {
 };
 
 /**
- * auth middleware
+ * auth middleware`
  */
 export const protect = (
   req: reqwithUser,

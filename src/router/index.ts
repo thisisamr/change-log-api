@@ -1,19 +1,25 @@
 import { Router } from "express";
+import { body } from "express-validator";
+import { validateUserInput } from "../middleware";
 const router = Router();
 /***
  * product
  */
 router.get("/product", (req, res) => res.send("hi"));
-router.get("/product/:id", () => {});
-router.put("/product/:id", () => {});
-router.post("/product", () => {});
+
+router.put(
+  "/product/:id",
+  body("name").exists(),
+  validateUserInput,
+  (req, res) => {}
+);
+router.post("/product", body("name").exists(), validateUserInput, () => {});
 router.delete("/product/:id", () => {});
 
 /**
  * update
  */
 router.get("/update", () => {});
-router.get("/update/:id", () => {});
 router.put("/update/:id", () => {});
 router.post("/update", () => {});
 router.delete("/update/:id", () => {});
