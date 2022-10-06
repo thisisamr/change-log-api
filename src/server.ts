@@ -8,8 +8,11 @@ import { body, checkSchema } from "express-validator";
 import { validateUserInput } from "./middleware";
 const app = express();
 app.use(json());
-app.use(urlencoded());
+app.use(urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.get("/", (req, res) => {
+  return res.status(200).json({ message: "welcome" });
+});
 app.use("/api/v1", protect, router);
 app.post(
   "/user",
