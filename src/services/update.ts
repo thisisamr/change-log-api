@@ -1,5 +1,5 @@
 import { Response } from "express";
-import prisma from "../../prisma/client";
+import prisma from "../prisma/client";
 import { reqwithUser } from "../modules/auth";
 export const getUpdates = async (req: reqwithUser, res: Response) => {
   const userid = req.user?.id;
